@@ -23,8 +23,8 @@ public class User implements Serializable {
 
     @Column(nullable = false)
     private String password;
-
-    @Column(nullable = false, length = 100)
+    
+    @Column(nullable = false, unique = true, length = 100)
     private String nickname;
 
     @Enumerated(EnumType.STRING)
