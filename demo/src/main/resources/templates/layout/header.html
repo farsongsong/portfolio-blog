@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title th:text="${pageTitle != null ? pageTitle + ' · Farsongsong' : 'Farsongsong'}">Farsongsong</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <meta name="_csrf" th:content="${_csrf.token}"/>
+  <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+  <link th:href="@{/css/style.css}" rel="stylesheet"/>
+</head>
+<body>
+<div id="reading-progress"></div>
+<button id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<nav class="navbar">
+  <div class="navbar-inner">
+    <div class="navbar-brand">
+      <a th:href="@{/}" class="brand-name">Farsongsong</a>
+      <span class="brand-dot"></span>
+    </div>
+    <div class="navbar-nav">
+      <a th:href="@{/}" class="nav-item" th:classappend="${currentMenu=='home'}?' active':''">Home</a>
+      <a th:href="@{/post/list}" class="nav-item" th:classappend="${currentMenu=='posts'}?' active':''">Posts</a>
+      <a th:href="@{/post/list(category='dev')}" class="nav-item">개발</a>
+      <a th:href="@{/post/list(category='essay')}" class="nav-item">공부</a>
+      <a th:href="@{/post/list(category='review')}" class="nav-item">독서</a>
+      <a th:href="@{/admin/write}" class="nav-item" sec:authorize="hasRole('ADMIN')" th:classappend="${currentMenu=='write'}?' active':''">글쓰기</a>
+    </div>
+    <form id="search-form" style="display:contents;">
+      <div class="navbar-search">
+        <span class="search-icon">⌕</span>
+        <input id="search-input" type="text" placeholder="검색..." th:value="${keyword}"/>
+      </div>
+    </form>
+    <div class="navbar-actions">
+      <a th:href="@{/admin/write}" sec:authorize="hasRole('ADMIN')" class="btn btn-primary btn-sm">+ 새 글</a>
+      <div class="navbar-user" sec:authorize="isAuthenticated()">
+        <div class="avatar" th:text="${#authentication != null and #authentication.principal != null} ? ${#strings.substring(#authentication.principal.user.nickname,0,1)} : '?'">A</div>
+        <span class="uname" th:text="${#authentication != null and #authentication.principal != null} ? ${#authentication.principal.user.nickname} : ''">User</span>
+      </div>
+      <form th:action="@{/auth/logout}" method="post" sec:authorize="isAuthenticated()" style="display:contents;">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+        <button type="submit" class="btn btn-ghost btn-sm">로그아웃</button>
+      </form>
+      <a th:href="@{/auth/login}" sec:authorize="isAnonymous()" class="btn btn-outline btn-sm">로그인</a>
+    </div>
+  </div>
+</nav>
+
+<div class="page-shell">

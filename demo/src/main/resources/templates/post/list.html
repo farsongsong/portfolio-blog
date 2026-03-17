@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Posts · Farsongsong</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <meta name="_csrf" th:content="${_csrf.token}"/>
+  <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+  <link th:href="@{/css/style.css}" rel="stylesheet"/>
+  <style>
+    .posts-list {
+      display: flex;
+      flex-direction: column;
+      border-top: 0.5px solid #e5e5e0;
+    }
+    .post-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 14px 4px;
+      border-bottom: 0.5px solid #e5e5e0;
+      text-decoration: none;
+      color: inherit;
+      transition: background 0.15s;
+    }
+    .post-row:hover { background: #fafaf8; }
+    .post-row-thumb {
+      width: 64px;
+      height: 64px;
+      border-radius: 8px;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+    .post-row-thumb-placeholder {
+      width: 64px;
+      height: 64px;
+      border-radius: 8px;
+      background: #f0f0ed;
+      border: 0.5px solid #e5e5e0;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      color: #aaa;
+    }
+    .post-row-body { flex: 1; min-width: 0; }
+    .post-row-cat { font-size: 11px; color: #888; margin-bottom: 3px; }
+    .post-row-title {
+      font-size: 15px;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin: 2px 0;
+      color: #111;
+    }
+    .post-row-meta {
+      font-size: 12px;
+      color: #aaa;
+      display: flex;
+      gap: 10px;
+      margin-top: 3px;
+    }
+  </style>
+</head>
+<body>
+<div id="reading-progress"></div>
+<button id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<nav class="navbar">
+  <div class="navbar-inner">
+    <div class="navbar-brand">
+      <a th:href="@{/}" class="brand-name">Farsongsong</a>
+      <span class="brand-dot"></span>
+    </div>
+    <div class="navbar-nav">
+      <a th:href="@{/}" class="nav-item">Home</a>
+      <a th:href="@{/post/list}" class="nav-item active">Posts</a>
+      <a th:href="@{/post/list(category='dev')}" class="nav-item" th:classappend="${category=='dev'}?' active':''">개발</a>
+      <a th:href="@{/post/list(category='essay')}" class="nav-item" th:classappend="${category=='essay'}?' active':''">공부</a>
+      <a th:href="@{/post/list(category='review')}" class="nav-item" th:classappend="${category=='review'}?' active':''">독서</a>
+    </div>
+    <form id="search-form" style="display:contents;">
+      <div class="navbar-search">
+        <span class="search-icon">⌕</span>
+        <input id="search-input" type="text" placeholder="검색..." th:value="${keyword}"/>
+      </div>
+    </form>
+    <div class="navbar-actions">
+      <a th:href="@{/admin/write}" sec:authorize="hasRole('ADMIN')" class="btn btn-primary btn-sm">+ 새 글</a>
+      <div class="navbar-user" sec:authorize="isAuthenticated()">
+        <div class="avatar" th:text="${#authentication != null and #authentication.principal != null} ? ${#strings.substring(#authentication.principal.user.nickname,0,1)} : '?'">A</div>
+        <span class="uname" th:text="${#authentication != null and #authentication.principal != null} ? ${#authentication.principal.user.nickname} : ''">User</span>
+      </div>
+      <form th:action="@{/auth/logout}" method="post" sec:authorize="isAuthenticated()">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+        <button type="submit" class="btn btn-ghost btn-sm">로그아웃</button>
+      </form>
+      <a th:href="@{/auth/login}" sec:authorize="isAnonymous()" class="btn btn-outline btn-sm">로그인</a>
+    </div>
+  </div>
+</nav>
+
+<main class="page-shell">
+  <div class="page-header">
+    <div class="page-overline">Blog Posts</div>
+    <h1 class="page-title" th:text="${keyword != null and !#strings.isEmpty(keyword)} ? '&quot;'+${keyword}+'&quot; 검색 결과' : (${category != null and !#strings.isEmpty(category)} ? ${category} : 'All Posts')">All Posts</h1>
+    <div class="page-desc" th:text="'총 '+${posts.totalElements}+'개의 글'">총 0개의 글</div>
+  </div>
+
+  <div class="category-tabs">
+    <button class="category-tab" th:classappend="${#strings.isEmpty(category)}?' active':''" data-category="">전체</button>
+    <button class="category-tab" th:classappend="${category=='dev'}?' active':''" data-category="dev">💻 개발</button>
+    <button class="category-tab" th:classappend="${category=='essay'}?' active':''" data-category="essay">📚 공부</button>
+    <button class="category-tab" th:classappend="${category=='review'}?' active':''" data-category="review">📖 독서</button>
+  </div>
+
+  <div class="list-grid">
+    <!-- 메인 컬럼 -->
+    <div>
+      <div th:if="${posts.totalElements==0}" class="empty-state" style="padding:72px 0;">
+        <div class="empty-icon">∅</div>
+        <p>게시글이 없습니다.</p>
+        <a th:href="@{/admin/write}" sec:authorize="hasRole('ADMIN')" class="btn btn-primary" style="margin-top:20px;">첫 글 쓰기</a>
+      </div>
+
+      <div class="posts-list" th:unless="${posts.totalElements==0}">
+        <a th:each="post : ${posts}" th:href="@{/post/{id}(id=${post.id})}" class="post-row">
+          <img th:if="${post.imageUrl!=null}" th:src="${post.imageUrl}" class="post-row-thumb" alt=""/>
+          <div th:unless="${post.imageUrl!=null}" class="post-row-thumb-placeholder">§</div>
+          <div class="post-row-body">
+            <div class="post-row-cat" th:text="${post.category!=null?post.category:'General'}">Category</div>
+            <div class="post-row-title" th:text="${post.title}">제목</div>
+            <div class="post-row-meta">
+              <span th:text="${#temporals.format(post.createdAt,'yyyy.MM.dd')}">날짜</span>
+              <span th:text="${post.viewCount}+' views'">0</span>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <div class="pagination" th:if="${posts.totalPages>1}">
+        <a th:if="${!posts.first}" th:href="@{/post/list(page=${currentPage-1},category=${category},keyword=${keyword})}">‹</a>
+        <th:block th:each="i : ${#numbers.sequence(0,posts.totalPages-1)}">
+          <a th:if="${i!=currentPage}" th:href="@{/post/list(page=${i},category=${category},keyword=${keyword})}" th:text="${i+1}">1</a>
+          <span th:if="${i==currentPage}" class="current" th:text="${i+1}">1</span>
+        </th:block>
+        <a th:if="${!posts.last}" th:href="@{/post/list(page=${currentPage+1},category=${category},keyword=${keyword})}">›</a>
+      </div>
+    </div>
+
+    <!-- 사이드바 -->
+    <div style="padding-top:4px;">
+
+      <!-- 카테고리 -->
+      <div class="widget">
+        <div class="widget-label">카테고리</div>
+        <div class="cat-list" style="margin-top:6px;">
+          <a th:href="@{/post/list}" class="cat-row" th:style="${#strings.isEmpty(category)}?'color:var(--black);background:var(--amber-light);font-weight:600;':''">
+            <span class="cat-row-icon" style="background:#f0f0ed;">📋</span>
+            <span class="cat-row-name">전체 글</span>
+          </a>
+          <a th:href="@{/post/list(category='dev')}" class="cat-row" th:style="${category=='dev'}?'color:var(--black);background:var(--amber-light);font-weight:600;':''">
+            <span class="cat-row-icon" style="background:#eef2ff;">💻</span>
+            <span class="cat-row-name">개발</span>
+          </a>
+          <a th:href="@{/post/list(category='essay')}" class="cat-row" th:style="${category=='essay'}?'color:var(--black);background:var(--amber-light);font-weight:600;':''">
+            <span class="cat-row-icon" style="background:#fff7ed;">📚</span>
+            <span class="cat-row-name">공부</span>
+          </a>
+          <a th:href="@{/post/list(category='review')}" class="cat-row" th:style="${category=='review'}?'color:var(--black);background:var(--amber-light);font-weight:600;':''">
+            <span class="cat-row-icon" style="background:#f0fdfa;">📖</span>
+            <span class="cat-row-name">독서</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- 검색 -->
+      <div class="widget">
+        <div class="widget-label">검색</div>
+        <form id="sidebar-search-form" style="margin-top:10px; display:flex; gap:8px;">
+          <input id="sidebar-search-input" type="text" class="form-control" placeholder="검색어 입력..." th:value="${keyword}" style="font-size:0.8rem;"/>
+          <button type="submit" class="btn btn-primary btn-sm" style="flex-shrink:0;">→</button>
+        </form>
+      </div>
+
+      <!-- About -->
+      <div class="widget">
+        <div class="widget-label">About</div>
+        <div style="margin-top:12px;">
+          <div style="font-family:var(--font-sans);font-weight:700;font-size:0.95rem;color:var(--black);margin-bottom:6px;">Farsongsong</div>
+          <p style="font-size:0.78rem;color:var(--gray-500);line-height:1.75;">개발자로 성장하며 배운 것들을 기록하는 공간입니다.</p>
+          <a th:href="@{/}" style="display:inline-block;margin-top:12px;font-size:0.74rem;color:var(--amber);font-weight:600;text-decoration:underline;text-underline-offset:3px;">← 홈으로</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div>
+        <div class="footer-brand-name">Farsongsong</div>
+        <p class="footer-brand-desc">개발 경험과 생각을 기록하는<br/>포트폴리오 블로그입니다.</p>
+      </div>
+      <div>
+        <div class="footer-col-title">카테고리</div>
+        <div class="footer-links">
+          <a th:href="@{/post/list(category='dev')}">💻 개발</a>
+          <a th:href="@{/post/list(category='essay')}">📚 공부</a>
+          <a th:href="@{/post/list(category='review')}">📖 독서</a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">바로가기</div>
+        <div class="footer-links">
+          <a th:href="@{/}">Home</a>
+          <a th:href="@{/post/list}">All Posts</a>
+          <a th:href="@{/auth/login}" sec:authorize="isAnonymous()">로그인</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 Farsongsong. All rights reserved.</span>
+      <span>Built with Spring Boot</span>
+    </div>
+  </div>
+</footer>
+
+<script th:src="@{/js/script.js}"></script>
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>로그인이 필요합니다 · Farsongsong</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link th:href="@{/css/style.css}" rel="stylesheet"/>
+</head>
+<body>
+<div id="reading-progress"></div>
+<button id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<nav class="navbar">
+  <div class="navbar-inner">
+    <div class="navbar-brand">
+      <a th:href="@{/}" class="brand-name">Farsongsong</a>
+      <span class="brand-dot"></span>
+    </div>
+    <div class="navbar-nav">
+      <a th:href="@{/}" class="nav-item">Home</a>
+      <a th:href="@{/post/list}" class="nav-item active">Posts</a>
+      <a th:href="@{/post/list(category='dev')}" class="nav-item">개발</a>
+      <a th:href="@{/post/list(category='essay')}" class="nav-item">공부</a>
+      <a th:href="@{/post/list(category='review')}" class="nav-item">독서</a>
+    </div>
+    <div class="navbar-actions">
+      <a th:href="@{/auth/login}" class="btn btn-outline btn-sm">로그인</a>
+      <a th:href="@{/auth/signup}" class="btn btn-primary btn-sm">회원가입</a>
+    </div>
+  </div>
+</nav>
+
+<main class="page-shell">
+  <div style="max-width:520px; margin:80px auto; text-align:center;">
+
+    <!-- 아이콘 -->
+    <div style="
+      width:80px; height:80px; border-radius:50%;
+      background:var(--amber-light); border:2px solid rgba(217,119,6,0.2);
+      display:flex; align-items:center; justify-content:center;
+      font-size:2rem; margin:0 auto 28px;
+    ">🔒</div>
+
+    <h1 style="
+      font-family:var(--font-serif); font-size:1.9rem; font-weight:700;
+      color:var(--black); margin-bottom:14px; letter-spacing:-0.02em;
+    ">로그인이 필요해요</h1>
+
+    <p style="
+      font-size:0.9rem; color:var(--gray-600); line-height:1.8;
+      margin-bottom:32px;
+    ">
+      이 글은 로그인한 회원만 읽을 수 있어요.<br/>
+      로그인하고 모든 글을 자유롭게 읽어보세요.
+    </p>
+
+    <!-- 버튼 -->
+    <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+      <a th:href="@{/auth/login(redirect=${redirectUrl})}" class="btn btn-primary" style="padding:10px 28px; font-size:0.85rem;">
+        로그인하기
+      </a>
+      <a th:href="@{/auth/signup}" class="btn btn-outline" style="padding:10px 28px; font-size:0.85rem;">
+        회원가입
+      </a>
+    </div>
+
+    <div style="margin-top:24px;">
+      <a th:href="@{/post/list}" style="font-size:0.78rem; color:var(--gray-400); text-decoration:underline; text-underline-offset:3px;">
+        ← 목록으로 돌아가기
+      </a>
+    </div>
+
+    <!-- 구분선 + 안내 -->
+    <div style="
+      margin-top:52px; padding:20px 24px;
+      background:var(--white); border:1px solid var(--gray-100);
+      border-radius:var(--radius-md); box-shadow:var(--shadow-sm);
+      text-align:left;
+    ">
+      <div style="font-family:var(--font-mono); font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--gray-400); margin-bottom:12px;">왜 로그인이 필요한가요?</div>
+      <ul style="list-style:none; display:flex; flex-direction:column; gap:8px;">
+        <li style="display:flex; align-items:center; gap:10px; font-size:0.8rem; color:var(--gray-600);">
+          <span style="color:var(--amber); font-size:1rem;">✓</span> 모든 글을 제한 없이 읽을 수 있어요
+        </li>
+        <li style="display:flex; align-items:center; gap:10px; font-size:0.8rem; color:var(--gray-600);">
+          <span style="color:var(--amber); font-size:1rem;">✓</span> 댓글로 의견을 남길 수 있어요
+        </li>
+        <li style="display:flex; align-items:center; gap:10px; font-size:0.8rem; color:var(--gray-600);">
+          <span style="color:var(--amber); font-size:1rem;">✓</span> 회원가입은 무료이고 간단해요
+        </li>
+      </ul>
+    </div>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-bottom" style="padding-top:0; border-top:none;">
+      <span>© 2025 Farsongsong. All rights reserved.</span>
+      <span>Built with Spring Boot</span>
+    </div>
+  </div>
+</footer>
+
+<script th:src="@{/js/script.js}"></script>
+</body>
+</html>
