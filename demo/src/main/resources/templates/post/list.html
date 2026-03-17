@@ -130,7 +130,7 @@
           <img th:if="${post.imageUrl!=null}" th:src="${post.imageUrl}" class="post-row-thumb" alt=""/>
           <div th:unless="${post.imageUrl!=null}" class="post-row-thumb-placeholder">§</div>
           <div class="post-row-body">
-            <div class="post-row-cat" th:text="${post.category!=null?post.category:'General'}">Category</div>
+            <div class="post-row-cat" th:text="${post.category == 'dev' ? '개발' : (post.category == 'essay' ? '공부' : (post.category == 'review' ? '독서' : (post.category == 'etc' ? '기타' : 'General')))}">Category</div>
             <div class="post-row-title" th:text="${post.title}">제목</div>
             <div class="post-row-meta">
               <span th:text="${#temporals.format(post.createdAt,'yyyy.MM.dd')}">날짜</span>
