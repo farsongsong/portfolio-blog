@@ -539,3 +539,13 @@ select.form-control { cursor: pointer; -webkit-appearance: none; }
   .footer-top { grid-template-columns: 1fr; gap: 28px; }
   .footer-bottom { flex-direction: column; gap: 8px; }
 }
+
+/* ── CODE BLOCK WITH TITLE ──────────────── */
+.code-block-wrap { margin: 1.8em 0; border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow); }
+.code-block-title { display: flex; align-items: center; gap: 8px; background: #1e1e2e; padding: 8px 18px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+.code-block-lang { font-family: var(--font-mono); font-size: 0.72rem; color: #a6e3a1; background: rgba(166,227,161,0.12); padding: 2px 8px; border-radius: 4px; }
+.code-block-name { font-family: var(--font-mono); font-size: 0.78rem; color: #cdd6f4; font-weight: 500; }
+.code-block-wrap pre { margin: 0; border-radius: 0; box-shadow: none; }
+/* ── POST LINK ──────────────────────────── */
+.post-link { color: var(--link); text-decoration: underline; text-underline-offset: 3px; font-weight: 500; }
+.post-link:hover { color: var(--indigo); }
