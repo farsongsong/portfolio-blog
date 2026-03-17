@@ -23,7 +23,7 @@
       <a th:href="@{/post/list}" class="nav-item active">Posts</a>
       <a th:href="@{/post/list(category='dev')}" class="nav-item">개발</a>
       <a th:href="@{/post/list(category='essay')}" class="nav-item">공부</a>
-      <a th:href="@{/post/list(category='review')}" class="nav-item">독서</a>
+      <a th:href="@{/post/list(category='review')}" class="nav-item">Read</a>
     </div>
     <form id="search-form" style="display:contents;">
       <div class="navbar-search">
@@ -67,8 +67,7 @@
 
       <img th:if="${post.imageUrl!=null}" th:src="${post.imageUrl}" class="post-detail-image" alt="대표 이미지"/>
 
-      <div class="post-detail-content"
-           th:utext="${#strings.replace(#strings.escapeXml(post.content),'&#10;','&lt;br/&gt;')}">내용</div>
+      <div class="post-detail-content" th:text="${post.content}">내용</div>
 
       <div class="divider"></div>
       <a th:href="@{/post/list}" class="btn btn-outline btn-sm">← 목록으로</a>
@@ -132,7 +131,7 @@
         <div class="footer-links">
           <a th:href="@{/post/list(category='dev')}">💻 개발</a>
           <a th:href="@{/post/list(category='essay')}">📚 공부</a>
-          <a th:href="@{/post/list(category='review')}">📖 독서</a>
+          <a th:href="@{/post/list(category='review')}">📖 Read</a>
         </div>
       </div>
       <div>
