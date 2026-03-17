@@ -173,32 +173,55 @@ function setupBackToTop() {
 }
 
 /* ─── MARKDOWN RENDERER ─────────────────── */
+function escapeHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
 function renderContent() {
   const el = document.querySelector('.post-detail-content');
   if (!el) return;
 
-  let html = el.innerHTML;
+  let text = el.textContent || '';
 
-  // 코드블록 제목 (```언어:제목 or ```제목)
-  html = html.replace(/```([^\n:]*):([^\n]*)\n([\s\S]*?)```/g, (_, lang, title, code) => {
-    const l = lang.trim();
-    const t = title.trim();
-    return `<div class="code-block-wrap"><div class="code-block-title"><span class="code-block-lang">${l || 'code'}</span><span class="code-block-name">${t}</span></div><pre><code>${code.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</code></pre></div>`;
+  // 코드블록 제목: ```언어:제목\n코드\n```
+  text = text.replace(/```([^\n:]*):([^\n]*)\n([\s\S]*?)```/g, (_, lang, title, code) => {
+    const l = escapeHtml(lang.trim()) || 'code';
+    const t = escapeHtml(title.trim());
+    return `<div class="code-block-wrap"><div class="code-block-title"><span class="code-block-lang">${l}</span><span class="code-block-name">${t}</span></div><pre><code>${escapeHtml(code)}</code></pre></div>`;
   });
 
-  // 일반 코드블록
-  html = html.replace(/```([^\n]*)\n([\s\S]*?)```/g, (_, lang, code) => {
-    const l = lang.trim();
-    return `<div class="code-block-wrap">${l ? `<div class="code-block-title"><span class="code-block-lang">${l}</span></div>` : ''}<pre><code>${code.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</code></pre></div>`;
+  // 일반 코드블록: ```언어\n코드\n```
+  text = text.replace(/```([^\n]*)\n([\s\S]*?)```/g, (_, lang, code) => {
+    const l = escapeHtml(lang.trim());
+    return `<div class="code-block-wrap">${l ? `<div class="code-block-title"><span class="code-block-lang">${l}</span></div>` : ''}<pre><code>${escapeHtml(code)}</code></pre></div>`;
   });
 
-  // 인라인 코드
-  html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+  // 인라인 코드: `코드`
+  text = text.replace(/`([^`\n]+)`/g, '<code>$1</code>');
 
-  // 하이퍼링크 [텍스트](url)
-  html = html.replace(/\[([^\]]+)\]\((https?:\/\/[^\)]+)\)/g, '<a href="$2" target="_blank" rel="noopener" class="post-link">$1</a>');
+  // 하이퍼링크: [텍스트](url)
+  text = text.replace(/\[([^\]]+)\]\((https?:\/\/[^\)]+)\)/g, '<a href="$2" target="_blank" rel="noopener" class="post-link">$1</a>');
 
-  el.innerHTML = html;
+  // 굵게: **텍스트**
+  text = text.replace(/\*\*([^\*]+)\*\*/g, '<strong>$1</strong>');
+
+  // 기울임: *텍스트*
+  text = text.replace(/\*([^\*\n]+)\*/g, '<em>$1</em>');
+
+  // H2: ## 제목
+  text = text.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+
+  // H3: ### 제목
+  text = text.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+
+  // 인용: > 텍스트
+  text = text.replace(/^&gt; (.+)$/gm, '<blockquote>$1</blockquote>');
+  text = text.replace(/^> (.+)$/gm, '<blockquote>$1</blockquote>');
+
+  // 줄바꿈 → <br>
+  text = text.replace(/\n/g, '<br>');
+
+  el.innerHTML = text;
 }
 
 /* ─── INIT ──────────────────────────────── */
