@@ -172,6 +172,35 @@ function setupBackToTop() {
   btn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 }
 
+/* ─── MARKDOWN RENDERER ─────────────────── */
+function renderContent() {
+  const el = document.querySelector('.post-detail-content');
+  if (!el) return;
+
+  let html = el.innerHTML;
+
+  // 코드블록 제목 (```언어:제목 or ```제목)
+  html = html.replace(/```([^\n:]*):([^\n]*)\n([\s\S]*?)```/g, (_, lang, title, code) => {
+    const l = lang.trim();
+    const t = title.trim();
+    return `<div class="code-block-wrap"><div class="code-block-title"><span class="code-block-lang">${l || 'code'}</span><span class="code-block-name">${t}</span></div><pre><code>${code.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</code></pre></div>`;
+  });
+
+  // 일반 코드블록
+  html = html.replace(/```([^\n]*)\n([\s\S]*?)```/g, (_, lang, code) => {
+    const l = lang.trim();
+    return `<div class="code-block-wrap">${l ? `<div class="code-block-title"><span class="code-block-lang">${l}</span></div>` : ''}<pre><code>${code.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</code></pre></div>`;
+  });
+
+  // 인라인 코드
+  html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+
+  // 하이퍼링크 [텍스트](url)
+  html = html.replace(/\[([^\]]+)\]\((https?:\/\/[^\)]+)\)/g, '<a href="$2" target="_blank" rel="noopener" class="post-link">$1</a>');
+
+  el.innerHTML = html;
+}
+
 /* ─── INIT ──────────────────────────────── */
 document.addEventListener('DOMContentLoaded', () => {
   setupImageUpload();
@@ -180,6 +209,7 @@ document.addEventListener('DOMContentLoaded', () => {
   setupSidebarSearch();
   setupReadingProgress();
   setupBackToTop();
+  renderContent();
 });
 
 function setupSidebarSearch() {
