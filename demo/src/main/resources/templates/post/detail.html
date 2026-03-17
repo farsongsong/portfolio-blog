@@ -22,7 +22,7 @@
       <a th:href="@{/}" class="nav-item">Home</a>
       <a th:href="@{/post/list}" class="nav-item active">Posts</a>
       <a th:href="@{/post/list(category='dev')}" class="nav-item">개발</a>
-      <a th:href="@{/post/list(category='essay')}" class="nav-item">Read</a>
+      <a th:href="@{/post/list(category='essay')}" class="nav-item">공부</a>
       <a th:href="@{/post/list(category='review')}" class="nav-item">독서</a>
     </div>
     <form id="search-form" style="display:contents;">
@@ -130,7 +130,7 @@
         <div class="footer-col-title">카테고리</div>
         <div class="footer-links">
           <a th:href="@{/post/list(category='dev')}">💻 개발</a>
-          <a th:href="@{/post/list(category='essay')}">📚 Read</a>
+          <a th:href="@{/post/list(category='essay')}">📚 공부</a>
           <a th:href="@{/post/list(category='review')}">📖 독서</a>
         </div>
       </div>
