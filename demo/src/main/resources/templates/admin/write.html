@@ -44,7 +44,7 @@
           <option value="">선택 안함</option>
           <option value="dev">개발</option>
           <option value="essay">공부</option>
-          <option value="review">독서</option>
+          <option value="review">Read</option>
           <option value="etc">기타</option>
         </select>
       </div>
@@ -74,6 +74,8 @@
         <button type="button" onclick="insertMd('`','`')">code</button>
         <button type="button" onclick="insertMd('\n```\n','\n```')">```</button>
         <button type="button" onclick="insertMd('- ','')">— list</button>
+        <button type="button" onclick="insertLink()">🔗 link</button>
+        <button type="button" onclick="insertCodeBlock()">📦 code+title</button>
       </div>
       <textarea id="content-area" name="content" class="form-control editor-textarea" placeholder="내용을 입력하세요." required></textarea>
     </div>
@@ -87,6 +89,8 @@
 <script th:src="@{/js/script.js}"></script>
 <script>
 function insertMd(b,a){const t=document.getElementById('content-area');const s=t.selectionStart,e=t.selectionEnd;t.value=t.value.substring(0,s)+b+t.value.substring(s,e)+a+t.value.substring(e);t.focus();t.setSelectionRange(s+b.length,e+b.length);}
+function insertLink(){const url=prompt('링크 URL을 입력하세요 (예: https://...)');if(!url)return;const text=prompt('링크 텍스트를 입력하세요');if(!text)return;insertMd('['+text+']('+ url+')','');}
+function insertCodeBlock(){const lang=prompt('언어를 입력하세요 (예: java, python, javascript)') || '';const title=prompt('코드 제목을 입력하세요 (선택사항)') || '';const header=lang+(title?':'+title:'');insertMd('\n```'+header+'\n','\n```\n');}
 </script>
 </body>
 </html>
