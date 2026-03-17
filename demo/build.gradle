@@ -34,16 +34,12 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
 
-
 	// DB
-	runtimeOnly 'com.mysql:mysql-connector-j'
+	implementation 'com.mysql:mysql-connector-j'
 
 	// Lombok
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
-
-	// DevTools
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
 	// Test
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
