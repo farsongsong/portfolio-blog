@@ -11,13 +11,13 @@
     .posts-list {
       display: flex;
       flex-direction: column;
-      border-top: 0.5px solid #e5e5e0;
+      border-top: none;
     }
     .post-row {
       display: flex;
       align-items: center;
       gap: 16px;
-      padding: 14px 4px;
+      padding: 18px 4px;
       border-bottom: 0.5px solid #e5e5e0;
       text-decoration: none;
       color: inherit;
@@ -78,7 +78,7 @@
       <a th:href="@{/}" class="nav-item">Home</a>
       <a th:href="@{/post/list}" class="nav-item active">Posts</a>
       <a th:href="@{/post/list(category='dev')}" class="nav-item" th:classappend="${category=='dev'}?' active':''">개발</a>
-      <a th:href="@{/post/list(category='essay')}" class="nav-item" th:classappend="${category=='essay'}?' active':''">Read</a>
+      <a th:href="@{/post/list(category='essay')}" class="nav-item" th:classappend="${category=='essay'}?' active':''">공부</a>
       <a th:href="@{/post/list(category='review')}" class="nav-item" th:classappend="${category=='review'}?' active':''">독서</a>
     </div>
     <form id="search-form" style="display:contents;">
@@ -112,7 +112,7 @@
   <div class="category-tabs">
     <button class="category-tab" th:classappend="${#strings.isEmpty(category)}?' active':''" data-category="">전체</button>
     <button class="category-tab" th:classappend="${category=='dev'}?' active':''" data-category="dev">💻 개발</button>
-    <button class="category-tab" th:classappend="${category=='essay'}?' active':''" data-category="essay">📚 Read</button>
+    <button class="category-tab" th:classappend="${category=='essay'}?' active':''" data-category="essay">📚 공부</button>
     <button class="category-tab" th:classappend="${category=='review'}?' active':''" data-category="review">📖 독서</button>
   </div>
 
@@ -167,7 +167,7 @@
           </a>
           <a th:href="@{/post/list(category='essay')}" class="cat-row" th:style="${category=='essay'}?'color:var(--black);background:var(--amber-light);font-weight:600;':''">
             <span class="cat-row-icon" style="background:#fff7ed;">📚</span>
-            <span class="cat-row-name">Read</span>
+            <span class="cat-row-name">공부</span>
           </a>
           <a th:href="@{/post/list(category='review')}" class="cat-row" th:style="${category=='review'}?'color:var(--black);background:var(--amber-light);font-weight:600;':''">
             <span class="cat-row-icon" style="background:#f0fdfa;">📖</span>
@@ -210,7 +210,7 @@
         <div class="footer-col-title">카테고리</div>
         <div class="footer-links">
           <a th:href="@{/post/list(category='dev')}">💻 개발</a>
-          <a th:href="@{/post/list(category='essay')}">📚 Read</a>
+          <a th:href="@{/post/list(category='essay')}">📚 공부</a>
           <a th:href="@{/post/list(category='review')}">📖 독서</a>
         </div>
       </div>
