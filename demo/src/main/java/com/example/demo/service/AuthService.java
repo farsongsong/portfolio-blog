@@ -20,7 +20,7 @@ public class AuthService {
         if (!userRepository.existsByUsername("admin")) {
             userRepository.save(User.builder()
                     .username("admin")
-                    .password(passwordEncoder.encode("admin1234"))
+                    .password(passwordEncoder.encode("ksh0302@"))
                     .nickname("파송송")
                     .role(RoleType.ADMIN)
                     .build());
