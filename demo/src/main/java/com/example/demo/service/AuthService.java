@@ -21,7 +21,7 @@ public class AuthService {
             userRepository.save(User.builder()
                     .username("admin")
                     .password(passwordEncoder.encode("admin1234"))
-                    .nickname("관리자")
+                    .nickname("파송송")
                     .role(RoleType.ADMIN)
                     .build());
         }
@@ -31,6 +31,9 @@ public class AuthService {
     public User register(String username, String password, String nickname) {
         if (userRepository.existsByUsername(username)) {
             throw new IllegalArgumentException("이미 사용 중인 아이디입니다.");
+        }
+        if (userRepository.existsByNickname(nickname)) {
+            throw new IllegalArgumentException("이미 사용 중인 닉네임입니다.");
         }
         return userRepository.save(User.builder()
                 .username(username)
@@ -42,5 +45,9 @@ public class AuthService {
 
     public boolean existsByUsername(String username) {
         return userRepository.existsByUsername(username);
+    }
+
+    public boolean existsByNickname(String nickname) {
+        return userRepository.existsByNickname(nickname);
     }
 }
