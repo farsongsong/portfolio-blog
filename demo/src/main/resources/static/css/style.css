@@ -406,7 +406,7 @@ button { cursor: pointer; font-family: var(--font-sans); }
 .post-detail-content h3 { font-family: var(--font-serif); font-size: 1.2rem; font-weight: 400; margin: 1.8em 0 0.5em; color: var(--black); }
 .post-detail-content blockquote { border-left: 3px solid var(--amber); padding: 8px 24px; color: var(--gray-600); margin: 1.8em 0; font-style: italic; background: var(--amber-light); border-radius: 0 var(--radius) var(--radius) 0; }
 .post-detail-content code { background: var(--gray-50); padding: 2px 7px; font-family: var(--font-mono); font-size: 0.84em; color: var(--indigo); border: 1px solid var(--gray-100); border-radius: var(--radius); }
-.post-detail-content pre { background: var(--gray-800); color: var(--gray-50); padding: 22px 28px; overflow-x: auto; margin: 1.8em 0; font-family: var(--font-mono); font-size: 0.84em; line-height: 1.75; border-radius: var(--radius-md); box-shadow: var(--shadow); }
+.post-detail-content pre { background: var(--gray-800); color: var(--gray-50); padding: 22px 28px; overflow-x: auto; margin: 1.8em 0; font-family: var(--font-mono); font-size: 0.76em; line-height: 1.75; border-radius: var(--radius-md); box-shadow: var(--shadow); }
 .post-detail-content pre code { background: none; padding: 0; color: inherit; border: none; }
 
 /* ── ADMIN BAR ──────────────────────────── */
